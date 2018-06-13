@@ -1,0 +1,1 @@
+# csc-vanity-wallet-generator
