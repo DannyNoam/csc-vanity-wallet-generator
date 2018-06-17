@@ -8,16 +8,15 @@ describe('Given the vanity wallet storer', () => {
   
   let vanityWallets = generateFakeVanityWallets();
   let vanityWalletGenerator = { generate: () => { return vanityWallets; }};
-  let httpRequesterPost =  { post: sinon.stub() };
-  let httpRequester = { request: httpRequesterPost };
+  let httpRequester =  { post: sinon.stub() };
   let httpRequesterForm = { form: sinon.spy() };
   
-  httpRequesterPost.post.withArgs(serviceEndpoint).returns(httpRequesterForm);
+  httpRequester.post.withArgs(serviceEndpoint).returns(httpRequesterForm);
   
   let testObj = new VanityWalletStorer(serviceEndpoint, vanityWalletGenerator, httpRequester, vanityWalletBatchSize);
   
-  describe("when generateInfiniteVanityWallets is invoked", () => {
-    testObj.generateInfiniteVanityWallets();
+  describe("when generateAndStoreVanityWallets is invoked", () => {
+    testObj.generateAndStoreVanityWallets();
     
     it("should POST vanity wallets found using the provided database endpoint", () => {
       let walletsPayload = httpRequesterForm.form.getCalls()[0].args[0];
