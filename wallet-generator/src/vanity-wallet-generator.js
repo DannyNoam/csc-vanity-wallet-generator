@@ -22,10 +22,11 @@ export default class VanityWalletGenerator {
   _isVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
     
-    let isVanityAddress = this.words.some((word) => {
-      address = address.substring(0, word.length);
+    let isVanityAddress = this.words.filter((word) => word.length >= 3).some((word) => {
+      let firstThreeLettersOfAddress = address.substring(0, word.length);
 
-      if(address.toUpperCase() === word.toUpperCase()) {
+      if(firstThreeLettersOfAddress.toUpperCase() === word.toUpperCase()) {
+        console.log("Address c" + address + " contains word: " + word + ".");
         return true;
       }
     });
