@@ -1,5 +1,3 @@
-// const CasinocoinAPI = require('casinocoin-libjs').CasinocoinAPI
-// const api = new CasinocoinAPI({ server: 'wss://ws01.casinocoin.org:4443' })
 export default class VanityWalletGenerator {
   
   constructor(api, words) {
@@ -7,21 +5,21 @@ export default class VanityWalletGenerator {
     this.words = words;
   }
   
-  generate(numberOfAddresses) {
+  generate(numberOfWallets) {
     var cscAccounts = [];
   
-    while (cscAccounts.length < numberOfAddresses) {
-      let address = this.api.generateAddress();
+    while (cscAccounts.length < numberOfWallets) {
+      let wallet = this.api.generateAddress();
       
-      if(this._isVanityAddress(address.address)) {
-        cscAccounts.push(address);
+      if(this._isVanityWallet(wallet.address)) {
+        cscAccounts.push(wallet);
       }
     }
     
     return cscAccounts;
   }
   
-  _isVanityAddress(address) {
+  _isVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
     
     let isVanityAddress = this.words.some((word) => {

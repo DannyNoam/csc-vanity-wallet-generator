@@ -1,12 +1,12 @@
-import VanityWalletGenerator from "../src/vanity-address-generator";
-import generateAddressPayload from "../test-util/test-address-generator";
+import VanityWalletGenerator from "../src/vanity-wallet-generator";
+import generateWalletPayload from "../test-util/test-wallet-generator";
 
 describe('Given the vanity wallet generator', () => {
   let CALL_COUNTER = 0;
   let arrayOfWords = ['Apple', 'Banana', 'Pear'];
   
-  let nonVanityAddressPayload = generateAddressPayload("address");
-  let vanityAddressPayload = generateAddressPayload('c' + arrayOfWords[0] + 'address');
+  let nonVanityAddressPayload = generateWalletPayload("wallet");
+  let vanityAddressPayload = generateWalletPayload('c' + arrayOfWords[0] + 'address');
   
   let cscApi = {
     generateAddress: function () {
@@ -22,7 +22,7 @@ describe('Given the vanity wallet generator', () => {
     
     let addresses = testObj.generate(numberOfAddresses);
     
-    it('should generate exactly the number of addresses that it was requested to', () => {
+    it('should generate exactly the number of wallets that it was requested to', () => {
       expect(addresses.length).toBe(2);
       expect(addresses).toEqual([vanityAddressPayload, vanityAddressPayload]);
     });

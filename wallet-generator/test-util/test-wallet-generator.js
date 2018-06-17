@@ -1,4 +1,4 @@
-export default function generateAddressPayload(address) {
+export default function generateWalletPayload(address) {
   return {
     secret: 'secret',
     address: address,
