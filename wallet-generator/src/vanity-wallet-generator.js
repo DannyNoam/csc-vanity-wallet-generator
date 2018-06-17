@@ -1,3 +1,5 @@
+const MINIMUM_WORD_LENGTH = 3;
+
 export default class VanityWalletGenerator {
   
   constructor(api, words) {
@@ -22,7 +24,7 @@ export default class VanityWalletGenerator {
   _isVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
     
-    let isVanityAddress = this.words.filter((word) => word.length >= 3).some((word) => {
+    let isVanityAddress = this.words.filter((word) => word.length >= MINIMUM_WORD_LENGTH).some((word) => {
       let firstThreeLettersOfAddress = address.substring(0, word.length);
 
       if(firstThreeLettersOfAddress.toUpperCase() === word.toUpperCase()) {
