@@ -30,7 +30,7 @@ function generateFakeVanityWallets(numberOfAddresses) {
   let fakeVanityAddresses = [];
   
   for(let i = 0; i < numberOfAddresses; i++) {
-    fakeVanityAddresses.push(generateAddressPayload("Apple"));
+    fakeVanityAddresses.push(generateWalletPayload("Apple"));
   }
   
   return fakeVanityAddresses;
