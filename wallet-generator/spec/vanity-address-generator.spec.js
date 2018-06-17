@@ -1,6 +1,7 @@
-import VanityWalletGenerator from "../src/vanity-wallet-generator";
+import VanityWalletGenerator from "../src/vanity-address-generator";
+import generateAddressPayload from "../test-util/test-address-generator";
 
-describe('Given the wallet generator', () => {
+describe('Given the vanity wallet generator', () => {
   let CALL_COUNTER = 0;
   let arrayOfWords = ['Apple', 'Banana', 'Pear'];
   
@@ -27,11 +28,3 @@ describe('Given the wallet generator', () => {
     });
   });
 });
-
-function generateAddressPayload(address) {
-  return {
-    secret: 'secret',
-    address: address,
-    publicKey: 'publicKey'
-  };
-}
