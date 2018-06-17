@@ -17,5 +17,8 @@
   "repository": {
     "type": "git",
     "url": "https://www.github.com/DannyNoam/csc-vanity-wallet-generator"
+  },
+  "scripts": {
+    "start": "babel-node src/main.js --presets es2015,stage-2"
   }
 }
