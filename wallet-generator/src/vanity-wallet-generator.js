@@ -1,16 +1,16 @@
-const MINIMUM_WORD_LENGTH = 3;
-
 export default class VanityWalletGenerator {
   
-  constructor(api, words) {
+  constructor(api, words, numberOfWallets, minimumWordLength) {
     this.api = api;
     this.words = words;
+    this.numberOfWallets = numberOfWallets;
+    this.minimumWordLength = minimumWordLength;
   }
   
-  generate(numberOfWallets) {
+  generate() {
     var cscAccounts = [];
   
-    while (cscAccounts.length < numberOfWallets) {
+    while (cscAccounts.length < this.numberOfWallets) {
       let wallet = this.api.generateAddress();
       
       if(this._isVanityWallet(wallet.address)) {
@@ -24,11 +24,10 @@ export default class VanityWalletGenerator {
   _isVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
     
-    let isVanityAddress = this.words.filter((word) => word.length >= MINIMUM_WORD_LENGTH).some((word) => {
-      let firstThreeLettersOfAddress = address.substring(0, word.length);
+    let isVanityAddress = this.words.filter((word) => word.length >= this.minimumWordLength).some((word) => {
+      let firstXLettersOfAddress = address.substring(0, word.length);
 
-      if(firstThreeLettersOfAddress.toUpperCase() === word.toUpperCase()) {
-        console.log("Address c" + address + " contains word: " + word + ".");
+      if(firstXLettersOfAddress.toUpperCase() === word.toUpperCase()) {
         return true;
       }
     });
