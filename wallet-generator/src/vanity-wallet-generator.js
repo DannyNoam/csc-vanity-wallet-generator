@@ -28,6 +28,7 @@ export default class VanityWalletGenerator {
       let firstXLettersOfAddress = address.substring(0, word.length);
 
       if(firstXLettersOfAddress.toUpperCase() === word.toUpperCase()) {
+        console.log("FOUND: Address c" + address + " contains word: " + word + ".");
         return true;
       }
     });
