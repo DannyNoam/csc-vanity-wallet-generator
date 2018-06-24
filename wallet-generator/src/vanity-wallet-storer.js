@@ -4,11 +4,10 @@ export default class VanityWalletStorer {
     this.serviceEndpoint = serviceEndpoint;
     this.walletGenerator = walletGenerator;
     this.httpRequester = httpRequester;
-    this.vanityWalletBatchSize = vanityWalletBatchSize;
   }
   
   generateAndStoreVanityWallets() {
-    let wallets = this.walletGenerator.generate(this.vanityWalletBatchSize);
+    let wallets = this.walletGenerator.generate();
     this.httpRequester.post(this.serviceEndpoint, (error) => {console.error("ERROR: " + error)}).form({"wallets": wallets});
   }
 }
