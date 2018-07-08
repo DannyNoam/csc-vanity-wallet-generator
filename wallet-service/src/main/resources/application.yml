@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: http://localhost:3306/wallet-db
+    username: aUser
+    password: aGuest
+    driver-class-name: com.mysql.jdbc.Driver
