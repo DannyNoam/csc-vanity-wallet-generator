@@ -1,13 +1,22 @@
 export default class VanityWalletStorer {
   
-  constructor(serviceEndpoint, walletGenerator, httpRequester, vanityWalletBatchSize) {
+  constructor(serviceEndpoint, walletGenerator, request) {
     this.serviceEndpoint = serviceEndpoint;
     this.walletGenerator = walletGenerator;
-    this.httpRequester = httpRequester;
+    this.request = request;
   }
   
   generateAndStoreVanityWallets() {
-    let wallets = this.walletGenerator.generate();
-    this.httpRequester.post(this.serviceEndpoint, (error) => {console.error("ERROR: " + error)}).form({"wallets": wallets});
+      let wallet = null;
+      let that = this;
+
+      while(wallet == null) {
+          wallet = this.walletGenerator.generate();
+      }
+
+      var needle = require('needle');
+      needle.post('http://localhost:8080/wallets', wallet, {json: true}, function (err, resp) {
+        that.generateAndStoreVanityWallets();
+      });
   }
 }

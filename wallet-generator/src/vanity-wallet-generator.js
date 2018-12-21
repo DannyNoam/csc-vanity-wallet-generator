@@ -1,39 +1,38 @@
 export default class VanityWalletGenerator {
   
-  constructor(api, words, numberOfWallets, minimumWordLength) {
+  constructor(api, words, minimumWordLength) {
     this.api = api;
     this.words = words;
-    this.numberOfWallets = numberOfWallets;
     this.minimumWordLength = minimumWordLength;
   }
   
   generate() {
-    var cscAccounts = [];
-  
-    while (cscAccounts.length < this.numberOfWallets) {
-      let wallet = this.api.generateAddress();
-      
-      if(this._isVanityWallet(wallet.address)) {
-        cscAccounts.push(wallet);
-      }
+    let wallet = this.api.generateAddress();
+    let vanityWallet = this._checkForVanityWallet(wallet.address);
+
+    if(vanityWallet != undefined && vanityWallet.isVanityWallet) {
+      wallet.word = vanityWallet.word;
+      return wallet;
     }
-    
-    return cscAccounts;
   }
   
-  _isVanityWallet(address) {
+  _checkForVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
+    let vanityWord = null;
     
-    let isVanityAddress = this.words.filter((word) => word.length >= this.minimumWordLength).some((word) => {
+    let result = this.words.filter((word) => word.length >= this.minimumWordLength).some((word) => {
       let firstXLettersOfAddress = address.substring(0, word.length);
 
       if(firstXLettersOfAddress.toUpperCase() === word.toUpperCase()) {
+        vanityWord = word;
+
         console.log("FOUND: Address c" + address + " contains word: " + word + ".");
+
         return true;
       }
     });
-    
-    return isVanityAddress;
+
+    return result === true ? { isVanityWallet: true, word: vanityWord } : { isVanityWallet: false };
   }
   
   _removeCSCIdentifierFromAddress(address) {

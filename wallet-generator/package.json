@@ -12,7 +12,7 @@
     "babel-register": "^6.26.0",
     "casinocoin-libjs": "1.0.11",
     "jasmine": "^3.1.0",
-    "request": "^2.87.0"
+    "needle": "^2.2.4"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
   },
   "scripts": {
     "start": "babel-node src/main.js --presets es2015,stage-2"
+  },
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
   }
 }

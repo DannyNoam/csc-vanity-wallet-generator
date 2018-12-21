@@ -4,4 +4,5 @@ import com.dannynoam.walletservice.domain.Wallet;
 
 public interface WalletService {
     void saveWallet(Wallet wallet);
+    Wallet getWallet(String address);
 }
