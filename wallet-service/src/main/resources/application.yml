@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://mysql:3306/wallet-db
+    url: jdbc:mariadb://csc-vanity-wallet-db:3306/wallet-db
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:Password1}
     driver-class-name: org.mariadb.jdbc.Driver

@@ -15,7 +15,7 @@ export default class VanityWalletGenerator {
       return wallet;
     }
 
-    this.generate();
+    return this.generate();
   }
   
   _checkForVanityWallet(address) {

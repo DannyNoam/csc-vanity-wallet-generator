@@ -5,7 +5,7 @@ metadata:
   name: "csc-vanity-wallet-generator-deployment"
   namespace: default
 spec:
-  replicas: 2
+  replicas: 6
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: "csc-vanity-wallet-generator"
-          image: "whufc4life1/csc-vanity-wallet-generator:b20"
+          image: "whufc4life1/csc-vanity-wallet-generator:b33"
           imagePullPolicy: Always
 ---
 apiVersion: extensions/v1beta1
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: "csc-vanity-wallet-service"
-          image: "whufc4life1/csc-vanity-wallet-service:b20"
+          image: "whufc4life1/csc-vanity-wallet-service:b33"
           imagePullPolicy: Always
           env:
             - name: DB_USERNAME
@@ -69,32 +69,32 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: csc-vanity-wallet-db
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql
+    app: csc-vanity-wallet-db
   clusterIP: None
 ---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: mysql
+  name: csc-vanity-wallet-db
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: csc-vanity-wallet-db
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
+        app: csc-vanity-wallet-db
     spec:
       containers:
-        - image: mysql:5.6
-          name: mysql
+        - image: whufc4life1/csc-vanity-wallet-db:b33
+          name: csc-vanity-wallet-db
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -124,101 +124,3 @@ spec:
   resources:
     requests:
       storage: 5Gi
-#livenessProbe:
-#  httpGet:
-#    path: {{ liveness_http | default('/liveness') }}
-#    port: {{ service_port | default('8080') }}
-#  initialDelaySeconds: {{ initial_delay_liveness | default('20') }}
-#  periodSeconds: {{ period_liveness | default('120') }}
-#readinessProbe:
-#  httpGet:
-#    path: {{ readiness_http | default('/healthcheck') }}
-#  {% if admin_port is defined %}
-#port: {{ admin_port }}
-#  {% else %}
-#port: {{ service_port | default('8080') }}
-#  {% endif %}
-#initialDelaySeconds: {{ initial_delay_readiness | default('20') }}
-#periodSeconds: {{ period_readiness | default('120') }}
-#timeoutSeconds: {{ readiness_timeoutSeconds | default('1') }}
-#ports:
-#  - containerPort: {{ service_port | default('8080') }}
-#  - containerPort: {{ admin_port | default('8081') }}
-#  - containerPort: 5005
-#env:
-#  - name: APP_DYNAMICS_NODE_NAME
-#    valueFrom:
-#      fieldRef:
-#        fieldPath: spec.nodeName
-#  - name: APP_DYNAMICS_AGENT_UNIQUE_HOST_ID
-#    valueFrom:
-#      fieldRef:
-#        fieldPath: metadata.name
-#  {% if tracing_enabled is defined and tracing_enabled == "true" %}
-#- name: JAEGER_AGENT_HOST
-#  value: "localhost"
-#- name: JAEGER_AGENT_PORT
-#  value: "{{ tracing_server_port | default('6831') }}"
-#  {% endif %}
-#envFrom:
-#  - configMapRef:
-#      name: "{{ service_name }}-configmap"
-#resources:
-#  requests:
-#    memory: "{{ memory_required | default('256Mi') }}"
-#  limits:
-#    memory: "{{ memory_limit | default('2048Mi') }}"
-#  {% if log_forwarding_enabled is defined and log_forwarding_enabled == true %}
-#- name: logger
-#  image: {{ log_forwarder_image }}
-#  env:
-#    - name: HOST_NAME
-#      valueFrom:
-#        fieldRef:
-#          fieldPath: spec.nodeName
-#    - name: INDEX_NAME
-#      value: {{ log_index_name | default('')}}
-#    - name: ENV_SOURCE_SUFFIX
-#      value: {{ env_source_suffix | default('')}}
-#    - name: SOURCE_NAME
-#      value : "{{ service_name }}-k8s"
-#    - name: HOSTS
-#      value: "{{ log_hosts }}"
-#    - name: APP_LOG_PATH
-#      value: "{{ app_log_path }}"
-#    - name: ACCESS_LOG_PATH
-#      value: "{{ access_log_path | default('')}}"
-#    - name: TZ
-#      value: "{{ log_forwarder_timezone | default('Etc/UTC')  }}"
-#  volumeMounts:
-#    - name: shared-data
-#      mountPath: {{ shared_data_mount_path | default('/home/member/log') }}
-#  resources:
-#    requests:
-#      memory: "{{ memory_required | default('256Mi') }}"
-#    limits:
-#      memory: "{{ memory_limit | default('1024Mi') }}"
-#  {% endif %}
-#  {% if tracing_enabled is defined and tracing_enabled == true %}
-#- name: jaeger-agent
-#  image: "gamesys-ps-private-docker-build.artifactory.gamesys.co.uk/member-jaeger-agent:latest"
-#  ports:
-#    - containerPort: 6831
-#      protocol: UDP
-#  args: ["--collector.host-port={{ tracing_collector_host }}:{{ tracing_collector_port }}"]
-#  resources:
-#    requests:
-#      memory: "{{ tracing_sidecar_memory_required | default('256Mi') }}"
-#    limits:
-#      memory: "{{ tracing_sidecar_memory_limit | default('1024Mi') }}"
-#  {% endif %}
-#securityContext:
-#  runAsNonRoot: {{ run_as_non_root | default('true') }}
-#  {% if custom_hosts is defined %}
-#hostAliases:
-#  {% for host in custom_hosts %}
-#- ip: {{ host.ip }}
-#  hostnames:
-#    - {{ host.name }}
-#  {% endfor %}
-#  {% endif %}
