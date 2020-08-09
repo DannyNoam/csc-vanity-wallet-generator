@@ -14,6 +14,8 @@ export default class VanityWalletGenerator {
       wallet.word = vanityWallet.word;
       return wallet;
     }
+
+    this.generate();
   }
   
   _checkForVanityWallet(address) {

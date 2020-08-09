@@ -7,15 +7,14 @@ export default class VanityWalletStorer {
   }
   
   generateAndStoreVanityWallets() {
-      let wallet = null;
+      let wallet = this.walletGenerator.generate();
       let that = this;
+      let requestBody = JSON.stringify(wallet);
 
-      while(wallet == null) {
-          wallet = this.walletGenerator.generate();
-      }
-
-      var needle = require('needle');
-      needle.post('http://localhost:8080/wallets', wallet, {json: true}, function (err, resp) {
+      this.request.post({
+          url: 'http://csc-vanity-wallet-service:8080/wallet',
+          json: requestBody
+      }, function (err, resp) {
         that.generateAndStoreVanityWallets();
       });
   }

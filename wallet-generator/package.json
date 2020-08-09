@@ -11,8 +11,10 @@
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
     "casinocoin-libjs": "1.0.11",
+    "express": "~4.17.1",
     "jasmine": "^3.1.0",
-    "needle": "^2.2.4"
+    "needle": "^2.2.4",
+    "request": "^2.88.0"
   },
   "repository": {
     "type": "git",

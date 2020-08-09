@@ -19,9 +19,9 @@ public class WalletController {
     @Autowired
     private WalletService cscWalletService;
 
-    @PostMapping(value = "/wallets")
+    @PostMapping(value = "/wallet")
     public ResponseEntity<Wallet> storeWallet(@RequestBody Wallet wallet) throws URISyntaxException {
-        logger.debug(String.format("Request to store wallet address %s received.", wallet.getAddress()));
+        logger.info(String.format("Request to store wallet address %s received.", wallet.getAddress()));
 
         cscWalletService.saveWallet(wallet);
 
@@ -30,7 +30,7 @@ public class WalletController {
 
     @GetMapping(value = "/wallet/{address}")
     public ResponseEntity<Wallet> getWallet(@PathVariable String address) {
-        logger.debug(String.format("Request to get wallet address %s received.", address));
+        logger.info(String.format("Request to get wallet address %s received.", address));
 
         return ResponseEntity.ok(cscWalletService.getWallet(address));
     }
