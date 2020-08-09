@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: "csc-vanity-wallet-generator"
-          image: "whufc4life1/csc-vanity-wallet-generator:b33"
+          image: "whufc4life1/csc-vanity-wallet-generator:b34"
           imagePullPolicy: Always
 ---
 apiVersion: extensions/v1beta1
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: "csc-vanity-wallet-service"
-          image: "whufc4life1/csc-vanity-wallet-service:b33"
+          image: "whufc4life1/csc-vanity-wallet-service:b34"
           imagePullPolicy: Always
           env:
             - name: DB_USERNAME
@@ -93,7 +93,7 @@ spec:
         app: csc-vanity-wallet-db
     spec:
       containers:
-        - image: whufc4life1/csc-vanity-wallet-db:b33
+        - image: whufc4life1/csc-vanity-wallet-db:b34
           name: csc-vanity-wallet-db
           env:
             - name: MYSQL_ROOT_PASSWORD
