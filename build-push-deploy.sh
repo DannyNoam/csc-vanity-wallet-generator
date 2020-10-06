@@ -54,4 +54,4 @@ docker push ${WALLET_DB_REPOSITORY_NAME}:b${VERSION}
 docker push ${WALLET_DB_REPOSITORY_NAME}:latest
 
 # Deploy
-cd .. && sed -i '' "s/b$OLD_VERSION/b$VERSION/g" "deployment.yaml" && kubectl apply -f $SCRIPT_PATH/deployment.yaml
+cd .. && sed -i '' "s/b$OLD_VERSION/b$VERSION/g" "deployment.yaml" && kubectl apply -f $SCRIPT_PATH/deployment.yaml --validate=false

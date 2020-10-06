@@ -1,6 +1,7 @@
 package com.dannynoam.walletservice.persistence.mapper;
 
 import com.dannynoam.walletservice.domain.Wallet;
+import com.dannynoam.walletservice.domain.WalletAddress;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ public class WalletResultSetExtractor implements ResultSetExtractor<Wallet> {
         if(rs.next()) {
             Wallet wallet = new Wallet();
 
-            wallet.setAddress(rs.getString("ADDRESS"));
+            wallet.setAddress(new WalletAddress(rs.getString("ADDRESS")));
             wallet.setPublicKey(rs.getString("PUBLIC_KEY"));
             wallet.setSecret(rs.getString("SECRET"));
 

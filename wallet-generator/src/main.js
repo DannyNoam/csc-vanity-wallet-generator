@@ -5,45 +5,67 @@ import WalletAPI from './wallet-api';
 const express = require('express');
 const app = express();
 const SERVICE_ENDPOINT = "http://csc-vanity-wallet-service:8080/wallet";
-const MINIMUM_WORD_LENGTH = 4;
+const MINIMUM_WORD_LENGTH = 3;
 
 let CasinocoinAPI = require('casinocoin-libjs').CasinocoinAPI;
 let cscApi = new CasinocoinAPI({ server: 'wss://ws01.casinocoin.org:4443' });
 let walletApi = new WalletAPI(cscApi);
 let request = require('request');
 let englishWords = require('an-array-of-english-words');
-let frenchWords = require('an-array-of-french-words');
-let spanishWords = require('an-array-of-spanish-words');
 let names = require('human-names');
 let badWords = require('badwords-list');
 
 const assembleWordsList = () => {
     let words = [];
 
-    /* For loops required because arrays are huge;
-       without them, we run out of frames. Try it.
-     */
-    for (let i = 0; i < englishWords.length; i++) {
-        words.push(englishWords[i]);
-    }
-
-    for (let i = 0; i < frenchWords.length; i++) {
-        words.push(frenchWords[i]);
-    }
-
-    for (let i = 0; i < spanishWords.length; i++) {
-        words.push(spanishWords[i]);
-    }
-
-    words.push(...names.allEn);
-    words.push(...names.allNl);
-    words.push(...names.allEs);
-    words.push(...names.allDe);
-    words.push(...names.allFr);
-    words.push(...names.allIt);
-    words.push(...badWords.array);
+    words = addWordsToList(englishWords, words);
+    words = addWordsToList(names.allEn, words);
+    words = addWordsToList(names.allNl, words);
+    words = addWordsToList(names.allEs, words);
+    words = addWordsToList(names.allDe, words);
+    words = addWordsToList(names.allFr, words);
+    words = addWordsToList(names.allIt, words);
+    words = addWordsToList(badWords.array, words);
+    words = removeNonEnglishAlphabeticCharacters(words);
+    words = lowercaseAllWords(words);
+    words = removeDuplicateWords(words);
+    words = sortWordsIntoAlphabeticalOrder(words);
 
     return words;
+}
+
+const addWordsToList = (words, wordsList) => {
+    for (let i = 0; i < words.length; i++) {
+        if(words[i].length >= MINIMUM_WORD_LENGTH) {
+            wordsList.push(words[i]);
+        }
+    }
+
+    return wordsList;
+}
+
+const removeDuplicateWords = (words) => {
+    return Array.from(new Set(words));
+}
+
+const sortWordsIntoAlphabeticalOrder = words => {
+    words.sort((a, b) => b.length - a.length);
+
+    return words;
+}
+
+const removeNonEnglishAlphabeticCharacters = words => {
+    const regex = new RegExp('^\s*([0-9a-zA-Z]+)\s*$');
+
+    return words.filter((word) => {
+        return word.match(regex);
+    });
+}
+
+const lowercaseAllWords = words => {
+    return words.map((word) => {
+        return word.toLowerCase();
+    });
 }
 
 let words = assembleWordsList();
@@ -51,6 +73,7 @@ let vanityWalletGenerator = new VanityWalletGenerator(walletApi, words, MINIMUM_
 let vanityWalletStorer = new VanityWalletStorer(SERVICE_ENDPOINT, vanityWalletGenerator, request);
 
 console.log("CasinoCoin Vanity Wallet Generator v1.0.0, by Danny Noam");
+console.log("Total number of vanity words: " + words.length);
 
 app.get('/liveness',(req,res)=> {
     res.status(200);

@@ -1,28 +1,35 @@
 package com.dannynoam.walletservice.service.impl;
 
-import com.dannynoam.walletservice.controller.WalletController;
 import com.dannynoam.walletservice.domain.Wallet;
+import com.dannynoam.walletservice.domain.WalletAddress;
 import com.dannynoam.walletservice.persistence.WalletDao;
 import com.dannynoam.walletservice.service.WalletService;
 import com.dannynoam.walletservice.service.exception.WalletNotFoundException;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CSCWalletService implements WalletService {
 
     private static final Logger logger = LogManager.getLogger(CSCWalletService.class);
 
-    @Autowired
     private WalletDao cscWalletDao;
 
     @Override
-    public void saveWallet(Wallet wallet) {
+    public void storeWallet(Wallet wallet) {
         cscWalletDao.storeWallet(wallet);
+    }
+
+    @Override
+    public List<WalletAddress> getWalletAddresses(String word, int limit) {
+        return cscWalletDao.getWalletAddresses(word, limit);
     }
 
     @Override

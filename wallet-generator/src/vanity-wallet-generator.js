@@ -21,7 +21,9 @@ export default class VanityWalletGenerator {
   _checkForVanityWallet(address) {
     address = this._removeCSCIdentifierFromAddress(address);
     let vanityWord = null;
-    
+
+    const startTime = new Date().getTime();
+
     let result = this.words.filter((word) => word.length >= this.minimumWordLength).some((word) => {
       let firstXLettersOfAddress = address.substring(0, word.length);
 
@@ -33,6 +35,9 @@ export default class VanityWalletGenerator {
         return true;
       }
     });
+
+    const endTime = new Date().getTime();
+    console.log("Time to execute vanity check: " + (endTime-startTime) + "ms");
 
     return result === true ? { isVanityWallet: true, word: vanityWord } : { isVanityWallet: false };
   }

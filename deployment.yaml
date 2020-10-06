@@ -1,11 +1,16 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: csc
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "csc-vanity-wallet-generator-deployment"
-  namespace: default
+  namespace: csc
 spec:
-  replicas: 6
+  replicas: 5
   revisionHistoryLimit: 2
   strategy:
     type: RollingUpdate
@@ -20,14 +25,14 @@ spec:
     spec:
       containers:
         - name: "csc-vanity-wallet-generator"
-          image: "whufc4life1/csc-vanity-wallet-generator:b34"
+          image: "whufc4life1/csc-vanity-wallet-generator:b54"
           imagePullPolicy: Always
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "csc-vanity-wallet-service-deployment"
-  namespace: default
+  namespace: csc
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -43,9 +48,26 @@ spec:
         color: green
     spec:
       containers:
-        - name: "csc-vanity-wallet-service"
-          image: "whufc4life1/csc-vanity-wallet-service:b34"
+        - name: wallet-service
+          image: "whufc4life1/csc-vanity-wallet-service:b54"
           imagePullPolicy: Always
+          ports:
+            - name: wallet-service
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 120
+            timoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 120
+            timeoutSeconds: 5
           env:
             - name: DB_USERNAME
               value: root
@@ -59,28 +81,30 @@ apiVersion: v1
 kind: Service
 metadata:
   name: csc-vanity-wallet-service
+  namespace: csc
 spec:
   ports:
     - port: 8080
   selector:
     app: csc-vanity-wallet-service-app
-  clusterIP: None
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: csc-vanity-wallet-db
+  namespace: csc
 spec:
   ports:
     - port: 3306
   selector:
     app: csc-vanity-wallet-db
-  clusterIP: None
 ---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: csc-vanity-wallet-db
+  namespace: csc
 spec:
   selector:
     matchLabels:
@@ -93,7 +117,7 @@ spec:
         app: csc-vanity-wallet-db
     spec:
       containers:
-        - image: whufc4life1/csc-vanity-wallet-db:b34
+        - image: whufc4life1/csc-vanity-wallet-db:b54
           name: csc-vanity-wallet-db
           env:
             - name: MYSQL_ROOT_PASSWORD
@@ -112,15 +136,29 @@ spec:
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: mysql-pv-claim-csc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
+  name: mysql-pv-claim-csc
+  namespace: csc
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
+---
+apiVersion: "extensions/v1beta1"
+kind: "Ingress"
+metadata:
+  name: "csc-vanity-wallet-service-ingress"
+  namespace: "csc"
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: csc-web-ip
+spec:
+  backend:
+    serviceName: "csc-vanity-wallet-service"
+    servicePort: 8080
+
