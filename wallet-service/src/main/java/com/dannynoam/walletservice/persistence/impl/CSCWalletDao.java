@@ -49,4 +49,14 @@ public class CSCWalletDao implements WalletDao {
                 walletAddressesResultSetExtractor
         );
     }
+
+    @Override
+    public Integer getWalletsCount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM WALLET", Integer.class);
+    }
+
+    @Override
+    public Integer getMaxWordLength() {
+        return jdbcTemplate.queryForObject("SELECT MAX(LENGTH(WORD)) FROM WALLET", Integer.class);
+    }
 }

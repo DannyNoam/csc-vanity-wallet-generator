@@ -1,5 +1,5 @@
-import VanityWalletGenerator from "../src/vanity-wallet-generator";
-import generateWalletPayload from "../test-util/test-wallet-generator";
+import generateWalletPayload from "../test-util/test-wallet-generator.js";
+import VanityWalletGenerator from "../src/vanity-wallet-generator.js";
 
 describe('Given the vanity wallet generator', () => {
   describe('with an array of words', () => {

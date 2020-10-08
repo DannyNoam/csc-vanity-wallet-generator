@@ -37,7 +37,7 @@ export default class VanityWalletGenerator {
     });
 
     const endTime = new Date().getTime();
-    console.log("Time to execute vanity check: " + (endTime-startTime) + "ms");
+    console.log("Executed vanity check, timeTakenMs=" + (endTime-startTime));
 
     return result === true ? { isVanityWallet: true, word: vanityWord } : { isVanityWallet: false };
   }

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -25,6 +25,8 @@ public class CSCWalletDaoUTest {
     private static final String SECRET = "ssEcnRSwQ1xXdyvYM8qdrwNMZQySm";
     private static final String WORD = "legend";
     private static final int LIMIT = 1;
+    private static final int WALLETS_COUNT = 5;
+    private static final int MAX_WORD_LENGTH = 8;
 
     private final WalletAddress address = new WalletAddress(ADDRESS);
     private final Wallet wallet = Wallet.builder()
@@ -86,5 +88,27 @@ public class CSCWalletDaoUTest {
                 walletAddressesResultSetExtractor);
         verifyNoMoreInteractions(jdbcTemplate);
         assertEquals(walletAddresses, actual);
+    }
+
+    @Test
+    public void getWalletsCount_executesCorrectQueryToGetWalletsCount() {
+        String sql = "SELECT COUNT(1) FROM WALLET";
+        when(jdbcTemplate.queryForObject(sql, Integer.class)).thenReturn(WALLETS_COUNT);
+        int actual = testObj.getWalletsCount();
+
+        verify(jdbcTemplate).queryForObject(sql, Integer.class);
+        verifyNoMoreInteractions(jdbcTemplate);
+        assertEquals(WALLETS_COUNT, actual);
+    }
+
+    @Test
+    public void getMaxWordLength_executesCorrectQueryToGetMaxWordLength() {
+        String sql = "SELECT MAX(LENGTH(WORD)) FROM WALLET";
+        when(jdbcTemplate.queryForObject(sql, Integer.class)).thenReturn(MAX_WORD_LENGTH);
+        int actual = testObj.getMaxWordLength();
+
+        verify(jdbcTemplate).queryForObject(sql, Integer.class);
+        verifyNoMoreInteractions(jdbcTemplate);
+        assertEquals(MAX_WORD_LENGTH, actual);
     }
 }

@@ -81,7 +81,7 @@ public class CSCWalletServiceFunctionalTest {
     }
 
     @Test
-    public void getWallets_walletsFoundForWord_returnsListOfWallets() throws Exception {
+    public void getWalletsContainingWord_walletsFoundForWord_returnsListOfWallets() throws Exception {
         mockMvc.perform(
             get("/wallets")
                 .queryParam("word", WORD)
@@ -90,6 +90,17 @@ public class CSCWalletServiceFunctionalTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].address", is(ADDRESS)));
+    }
+
+    @Test
+    public void getWallets_returnsWalletsInfo() throws Exception {
+        mockMvc.perform(
+                get("/wallets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count", isA(Integer.class)))
+                .andExpect(jsonPath("$.maxWordLength", isA(Integer.class)));
     }
 
     private String asJsonString(Object object) {

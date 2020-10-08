@@ -2,6 +2,7 @@ package com.dannynoam.walletservice.service.impl;
 
 import com.dannynoam.walletservice.domain.Wallet;
 import com.dannynoam.walletservice.domain.WalletAddress;
+import com.dannynoam.walletservice.domain.WalletsInfo;
 import com.dannynoam.walletservice.persistence.WalletDao;
 import com.dannynoam.walletservice.service.exception.WalletNotFoundException;
 import org.junit.Test;
@@ -24,6 +25,8 @@ public class CSCWalletServiceUTest {
     private static final String ADDRESS = "cERKUMRxtgW2asds7Z8Sd1KWazgtENbWEH";
     private static final String WORD = "legend";
     private static final int LIMIT = 1;
+    private static final int WALLETS_COUNT = 5;
+    private static final int MAX_WORD_LENGTH = 8;
 
     private final WalletAddress address = new WalletAddress(ADDRESS);
     private final Wallet wallet = Wallet.builder()
@@ -48,7 +51,7 @@ public class CSCWalletServiceUTest {
         List<WalletAddress> walletAddresses = Collections.singletonList(address);
         when(cscWalletDao.getWalletAddresses(WORD, LIMIT)).thenReturn(walletAddresses);
 
-        List<WalletAddress> actual = testObj.getWalletAddresses(WORD, LIMIT);
+        List<WalletAddress> actual = testObj.getWalletAddressesContainingWord(WORD, LIMIT);
 
         assertEquals(walletAddresses, actual);
     }
@@ -69,5 +72,19 @@ public class CSCWalletServiceUTest {
         Wallet actual = testObj.getWallet(ADDRESS);
 
         assertEquals(wallet, actual);
+    }
+
+    @Test
+    public void getWalletsInfo_aggregatesInfoUsingUnderlyingDaoAndReturnsWalletsInfo() {
+        when(cscWalletDao.getWalletsCount()).thenReturn(WALLETS_COUNT);
+        when(cscWalletDao.getMaxWordLength()).thenReturn(MAX_WORD_LENGTH);
+        WalletsInfo expected = WalletsInfo.builder()
+                .count(WALLETS_COUNT)
+                .maxWordLength(MAX_WORD_LENGTH)
+                .build();
+
+        WalletsInfo actual = testObj.getWalletsInfo();
+
+        assertEquals(expected, actual);
     }
 }

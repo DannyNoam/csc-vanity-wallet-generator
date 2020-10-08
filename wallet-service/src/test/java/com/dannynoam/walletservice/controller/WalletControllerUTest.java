@@ -2,6 +2,7 @@ package com.dannynoam.walletservice.controller;
 
 import com.dannynoam.walletservice.domain.Wallet;
 import com.dannynoam.walletservice.domain.WalletAddress;
+import com.dannynoam.walletservice.domain.WalletsInfo;
 import com.dannynoam.walletservice.service.WalletService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,8 @@ public class WalletControllerUTest {
     private final Wallet wallet = Wallet.builder()
             .address(address)
             .build();
+    private final WalletsInfo walletsInfo = WalletsInfo.builder()
+            .build();
 
     @Mock
     private WalletService cscWalletService;
@@ -52,11 +55,11 @@ public class WalletControllerUTest {
     @Test
     public void getWallets_callsUnderlyingServiceAndReturnsListOfWalletResources() {
         List<WalletAddress> walletAddresses = Collections.singletonList(address);
-        when(cscWalletService.getWalletAddresses(WORD, LIMIT)).thenReturn(walletAddresses);
+        when(cscWalletService.getWalletAddressesContainingWord(WORD, LIMIT)).thenReturn(walletAddresses);
 
-        ResponseEntity<List<WalletAddress>> actual = testObj.getWallets(WORD, LIMIT);
+        ResponseEntity<List<WalletAddress>> actual = testObj.getWalletsContainingWord(WORD, LIMIT);
 
-        verify(cscWalletService).getWalletAddresses(WORD, LIMIT);
+        verify(cscWalletService).getWalletAddressesContainingWord(WORD, LIMIT);
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(walletAddresses, actual.getBody());
     }
@@ -70,6 +73,17 @@ public class WalletControllerUTest {
         verify(cscWalletService).getWallet(ADDRESS);
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(wallet, actual.getBody());
+    }
+
+    @Test
+    public void getWallets_callsUnderlyingServiceAndReturnsWalletsInfoResource() {
+        when(cscWalletService.getWalletsInfo()).thenReturn(walletsInfo);
+
+        ResponseEntity<WalletsInfo> actual = testObj.getWallets();
+
+        verify(cscWalletService).getWalletsInfo();
+        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(walletsInfo, actual.getBody());
     }
 
     @Test

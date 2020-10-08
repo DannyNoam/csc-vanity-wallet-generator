@@ -2,6 +2,7 @@ package com.dannynoam.walletservice.controller;
 
 import com.dannynoam.walletservice.domain.Wallet;
 import com.dannynoam.walletservice.domain.WalletAddress;
+import com.dannynoam.walletservice.domain.WalletsInfo;
 import com.dannynoam.walletservice.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -35,12 +36,19 @@ public class WalletController {
         return ResponseEntity.created(new URI("/wallet/" + wallet.getAddress().getAddress())).body(wallet);
     }
 
-    @GetMapping(value = "/wallets")
-    public ResponseEntity<List<WalletAddress>> getWallets(@RequestParam String word,
-                                                          @RequestParam @Max(50) @Min(1) int limit) {
+    @GetMapping(value = "/wallets", params = { "word", "limit" })
+    public ResponseEntity<List<WalletAddress>> getWalletsContainingWord(@RequestParam String word,
+                                                                        @RequestParam @Max(50) @Min(1) int limit) {
         logger.info(String.format("Request to get wallets for word=%s, limit=%d", word, limit));
 
-        return ResponseEntity.ok(cscWalletService.getWalletAddresses(word, limit));
+        return ResponseEntity.ok(cscWalletService.getWalletAddressesContainingWord(word, limit));
+    }
+
+    @GetMapping(value = "/wallets")
+    public ResponseEntity<WalletsInfo> getWallets() {
+        logger.info(String.format("Request to get wallets"));
+
+        return ResponseEntity.ok(cscWalletService.getWalletsInfo());
     }
 
     @GetMapping(value = "/wallet/{address}")

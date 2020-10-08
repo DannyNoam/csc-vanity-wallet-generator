@@ -2,6 +2,7 @@ package com.dannynoam.walletservice.service.impl;
 
 import com.dannynoam.walletservice.domain.Wallet;
 import com.dannynoam.walletservice.domain.WalletAddress;
+import com.dannynoam.walletservice.domain.WalletsInfo;
 import com.dannynoam.walletservice.persistence.WalletDao;
 import com.dannynoam.walletservice.service.WalletService;
 import com.dannynoam.walletservice.service.exception.WalletNotFoundException;
@@ -28,7 +29,7 @@ public class CSCWalletService implements WalletService {
     }
 
     @Override
-    public List<WalletAddress> getWalletAddresses(String word, int limit) {
+    public List<WalletAddress> getWalletAddressesContainingWord(String word, int limit) {
         return cscWalletDao.getWalletAddresses(word, limit);
     }
 
@@ -42,5 +43,13 @@ public class CSCWalletService implements WalletService {
         }
 
         return wallet.get();
+    }
+
+    @Override
+    public WalletsInfo getWalletsInfo() {
+        return WalletsInfo.builder()
+                .count(cscWalletDao.getWalletsCount())
+                .maxWordLength(cscWalletDao.getMaxWordLength())
+                .build();
     }
 }

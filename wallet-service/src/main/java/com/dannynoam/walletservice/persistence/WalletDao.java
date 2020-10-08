@@ -10,4 +10,6 @@ public interface WalletDao {
     void storeWallet(Wallet wallet);
     Optional<Wallet> getWallet(String address);
     List<WalletAddress> getWalletAddresses(String word, int limit);
+    Integer getWalletsCount();
+    Integer getMaxWordLength();
 }
